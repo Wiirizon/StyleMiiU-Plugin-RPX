@@ -12,6 +12,19 @@ bool ReplaceContent(const std::string& men,
     std::string layerName = "StyleMiiU /vol/content";
 
     bool oneRedirect = false;
+    if(!contentExtraPath.empty()) {
+        auto res = ContentRedirection_AddFSLayerEx(&gContentLayerHandle,
+                                                    layerName.c_str(),
+                                                    "/vol/content",
+                                                    contentExtraPath.c_str(),
+                                                    FS_LAYER_TYPE_EX_MERGE_DIRECTORY);
+
+        if (res == CONTENT_REDIRECTION_RESULT_SUCCESS) {
+            oneRedirect = true;
+        } else {
+            DEBUG_FUNCTION_LINE_ERR("Failed to redirect /vol/content to %s", cafeBarista.c_str());
+        }
+    }
     if(!men.empty()){
         auto res = ContentRedirection_AddFSLayerEx(&gContentLayerHandle,
                                                  layerName.c_str(),
@@ -42,19 +55,6 @@ bool ReplaceContent(const std::string& men,
                                                  "/vol/content/Common/Sound/Men/cafe_barista_men.bfsar",
                                                  cafeBarista.c_str(),
                                                  FS_LAYER_TYPE_EX_REPLACE_FILE);
-        if (res == CONTENT_REDIRECTION_RESULT_SUCCESS) {
-            oneRedirect = true;
-        } else {
-            DEBUG_FUNCTION_LINE_ERR("Failed to redirect /vol/content to %s", cafeBarista.c_str());
-        }
-    }
-    if(!contentExtraPath.empty()) {
-        auto res = ContentRedirection_AddFSLayerEx(&gContentLayerHandle,
-                                                    layerName.c_str(),
-                                                    "/vol/content",
-                                                    contentExtraPath.c_str(),
-                                                    FS_LAYER_TYPE_EX_MERGE_DIRECTORY);
-
         if (res == CONTENT_REDIRECTION_RESULT_SUCCESS) {
             oneRedirect = true;
         } else {
