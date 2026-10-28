@@ -4,6 +4,8 @@ StyleMiiU RPX is a small fork of [StyleMiiU](https://github.com/ThemeCafe/StyleM
 
 It keeps the original theme options and adds a way to launch a custom menu from your SD card.
 
+Modified on October 28, 2026 to add RPX theme launching and update the plugin title. The plugin remains licensed under GPLv3; see [LICENSE](LICENSE). This is an unofficial project and is not affiliated with or endorsed by Nintendo.
+
 **No system file is modified by this plugin.**
 
 This plugin's codebase is heavily based on SDCafiine.
@@ -38,6 +40,8 @@ SD:/wiiu/themes/WiiUNX2/men.rpx
 ```
 
 Select it under **StyleMiiU RPX > Available Themes**, with **Mashup themes** turned off. The plugin also finds `men.rpx` in subfolders, including `code/men.rpx`. If the selected theme contains an executable, it takes priority over the theme's asset files. Shuffle can select RPX themes; mashup continues to use asset files only.
+
+Only use RPX files from sources you trust: they run as homebrew code and can access your console and SD card.
 
 This needs Aroma's RPXLoadingModule. The executable is launched as homebrew through Aroma's wrapper application, rather than replacing the system menu in memory. Use a homebrew menu built to run this way; a dumped or patched Nintendo menu is not supported. WiiUNX2 still needs testing on a console with this launch method.
 
