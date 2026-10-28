@@ -66,6 +66,17 @@ The most common issue would be having bad or corrupted Men.pack, Men2.pack or ca
 
 ## Building
 
-Make sure to clone/pull the submodules (use the `--recurse-submodules` option).
+Install devkitPro's devkitPPC and wut, then clone the repository with `--recurse-submodules`. From the repository folder, run:
 
-Should be as easy as running `make` and let it do its thing.
+```sh
+git submodule update --init --recursive
+make -j4
+```
+
+The output is `stylemiiu.wps`. On Windows, use the devkitPro MSYS2 shell.
+
+## Release files and licensing
+
+The RPX fork is experimental and has not been tested on a console. Release packages contain the plugin, installation instructions, and license notices. Themes and menu executables are supplied separately; no Nintendo firmware, keys, artwork, music, or themes are included.
+
+The plugin is GPLv3, and its dependencies keep their own licenses. See [THIRD-PARTY.md](THIRD-PARTY.md) for credits and source locations. Each binary release comes with a separate source archive that includes the pinned submodule sources and their licenses. Use that archive to rebuild; GitHub's automatic source archives do not include submodule contents. Keep the license notices and provide the matching source when redistributing the plugin.
