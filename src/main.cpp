@@ -1,6 +1,6 @@
 #include "globals.h"
 #include "utils/logger.h"
-#include <themeSelector.h>
+#include "themeSelector.h"
 #include <utils/StringTools.h>
 
 #include <notifications/notifications.h>
@@ -24,13 +24,13 @@
 #include <algorithm>
 #include <array>
 #include <filesystem>
+#include <flat_map>
 #include <functional>
 #include <random>
 #include <ranges>
-#include <string_view>
 #include <vector>
 
-WUPS_PLUGIN_NAME("StyleMiiU RPX");
+WUPS_PLUGIN_NAME("StyleMiiU");
 WUPS_PLUGIN_DESCRIPTION("A way to easily load custom themes");
 WUPS_PLUGIN_VERSION(VERSION);
 WUPS_PLUGIN_AUTHOR("Juanen100");
@@ -182,6 +182,13 @@ void shuffle_themes_changed_callback(wupsext::ConfigItemBooleanVarContext &item)
     need_to_restart = true;
 }
 
+void mashup_themes_changed_callback(wupsext::ConfigItemBooleanVarContext &item) {
+    DEBUG_FUNCTION_LINE_VERBOSE("New value in %s changed: %s",
+                                item.identifier.data(),
+                                item.variable ? "true" : "false");
+    need_to_restart = true;
+}
+
 void theme_changed_callback(wupsext::ConfigItemThemeContext &item) {
     DEBUG_FUNCTION_LINE_VERBOSE("New value in %s changed: %s",
                                 item.identifier.data(),
@@ -201,7 +208,7 @@ try {
     using BoolItem = wupsext::ConfigItemBooleanVar;
 
     root.add(BoolItem::Create(KEY_THEME_MANAGER_ENABLED,
-                              "Enable StyleMiiU RPX",
+                              "Enable StyleMiiU",
                               gThemeManagerEnabled,
                               theme_manager_enabled_changed_callback));
 
@@ -216,7 +223,8 @@ try {
 
     root.add(BoolItem::Create(KEY_MASHUP_THEMES,
                               "Mashup themes",
-                              gMashupThemes));
+                              gMashupThemes,
+                              mashup_themes_changed_callback));
 
     // Show last loaded theme
     if (!gLoadedTheme.empty())
@@ -326,9 +334,41 @@ void ConfigMenuClosedCallback() {
                                 err);
     }
 
+    /*
+     * Special restart conditions, when shuffle is enabled:
+     * 1. If the current theme was disabled.
+     * 2. If no theme is loaded, and at least one theme is enabled.
+     */
+    if (gShuffleThemes) {
 
-    if(need_to_restart && is_wiiu_menu)
-    {
+        // Case 1: if current theme was disabled.
+        if (!gLoadedTheme.empty() &&
+            !gEnabledThemes.contains(gLoadedTheme))
+            need_to_restart = true;
+
+        // Handle mashups too: if any component of a mashup is disabled, gotta restart.
+        if (!gLoadedMenTheme.empty() &&
+            !gEnabledThemes.contains(gLoadedMenTheme))
+            need_to_restart = true;
+
+        if (!gLoadedMen2Theme.empty() &&
+            !gEnabledThemes.contains(gLoadedMen2Theme))
+            need_to_restart = true;
+
+        if (!gLoadedCafeBaristaTheme.empty() &&
+            !gEnabledThemes.contains(gLoadedCafeBaristaTheme))
+            need_to_restart = true;
+
+        // Case 2: no theme was loaded, now at least one theme is enabled
+        if (!gEnabledThemes.empty() &&
+            gLoadedTheme.empty() &&
+            gLoadedMenTheme.empty() &&
+            gLoadedMen2Theme.empty() &&
+            gLoadedCafeBaristaTheme.empty())
+            need_to_restart = true;
+    }
+
+    if(need_to_restart && is_wiiu_menu) {
         SYSLaunchMenu();
         need_to_restart = false;
     }
@@ -351,7 +391,7 @@ INITIALIZE_PLUGIN() {
         gShowNotification = false;
     }
 
-    WUPSConfigAPIOptionsV1 configOptions = {.name = "StyleMiiU RPX"};
+    WUPSConfigAPIOptionsV1 configOptions = {.name = "StyleMiiU"};
     if (auto err = WUPSConfigAPI_Init(configOptions,
                                       ConfigMenuOpenedCallback,
                                       ConfigMenuClosedCallback)) {
@@ -376,28 +416,64 @@ DEINITIALIZE_PLUGIN() {
     NotificationModule_DeInitLibrary();
 }
 
-void
+enum SearchType : unsigned {
+    SearchMen         = 1u << 0u,
+    SearchMen2        = 1u << 1u,
+    SearchCafeBarista = 1u << 2u,
+
+    SearchAll = SearchMen | SearchMen2 | SearchCafeBarista
+};
+
+struct SearchResult {
+    std::optional<std::filesystem::path> menPack;
+    std::optional<std::filesystem::path> men2Pack;
+    std::optional<std::filesystem::path> cafeBarista;
+    std::optional<std::filesystem::path> menRpx;
+    std::optional<std::flat_set<std::filesystem::path>> bfstmSet;
+};
+
+SearchResult
 SearchThemeFiles(const std::filesystem::path &themePath,
-                 std::filesystem::path &outMenPack,
-                 std::filesystem::path &outMen2Pack,
-                 std::filesystem::path &outCafeBarista,
-                 std::filesystem::path *outMenRpx = nullptr)
-try {
-    for (auto &entry : std::filesystem::recursive_directory_iterator{themePath}) {
-        if (!entry.is_regular_file())
-            continue;
-        auto filename = entry.path().filename();
-        if (outMenRpx && outMenRpx->empty() && IgnoreCaseEqual(filename, "men.rpx"))
-            *outMenRpx = entry.path();
-        if (outMenPack.empty() && IgnoreCaseEqual(filename, "Men.pack"))
-            outMenPack = entry.path();
-        if (outMen2Pack.empty() && IgnoreCaseEqual(filename, "Men2.pack"))
-            outMen2Pack = entry.path();
-        if (outCafeBarista.empty() && IgnoreCaseEqual(filename, "cafe_barista_men.bfsar"))
-            outCafeBarista = entry.path();
+                 unsigned flags)
+{
+    SearchResult result;
+    try {
+        for (auto &entry : std::filesystem::recursive_directory_iterator{themePath}) {
+            if (!entry.is_regular_file())
+                continue;
+            auto path = entry.path();
+            auto filename = path.filename();
+
+            if (!result.menRpx &&
+                IgnoreCaseEqual(filename, "men.rpx"))
+                result.menRpx = path;
+
+            if ((flags & SearchMen) &&
+                !result.menPack &&
+                IgnoreCaseEqual(filename, "Men.pack"))
+                result.menPack = path;
+
+            if ((flags & SearchMen2) &&
+                !result.men2Pack &&
+                IgnoreCaseEqual(filename, "Men2.pack"))
+                result.men2Pack = path;
+
+            if ((flags & SearchCafeBarista) &&
+                !result.cafeBarista &&
+                IgnoreCaseEqual(filename, "cafe_barista_men.bfsar"))
+                result.cafeBarista = path;
+
+            if ((flags & SearchCafeBarista) &&
+                IgnoreCaseEqual(filename.extension(), ".bfstm")) {
+                if (!result.bfstmSet)
+                    result.bfstmSet.emplace();
+                result.bfstmSet->insert(path);
+            }
+        }
     }
+    catch (...) {}
+    return result;
 }
-catch (...) {}
 
 void HandleThemes() {
     gLoadedTheme.clear();
@@ -416,68 +492,61 @@ void HandleThemes() {
     bool success = false;
 
     std::filesystem::path menPackPath, men2PackPath, cafeBaristaPath, contentPath;
+    std::flat_set<std::filesystem::path> bfstmSet;
 
     if (gMashupThemes && gShuffleThemes) {
-        std::filesystem::path tempMenPack, tempMen2Pack, tempCafeBarista;
 
         int attempts = 0;
         const int maxAttempts = gEnabledThemes.size() * 2;
 
+        // Find a Men.pack
         while (menPackPath.empty() && attempts < maxAttempts) {
             auto randomTheme = get_random_item(gEnabledThemes);
             auto themePath = theme_directory_path / randomTheme;
 
-            tempMenPack.clear();
-            tempMen2Pack.clear();
-            tempCafeBarista.clear();
-
-            SearchThemeFiles(themePath, tempMenPack, tempMen2Pack, tempCafeBarista);
-
-            if (!tempMenPack.empty()) {
-                menPackPath = tempMenPack;
+            auto res = SearchThemeFiles(themePath, SearchMen);
+            if (res.menPack) {
+                menPackPath = std::move(*res.menPack);
                 gLoadedMenTheme = randomTheme;
                 break;
             }
             attempts++;
         }
 
+        // Find a Men2.pack
         attempts = 0;
         while (men2PackPath.empty() && attempts < maxAttempts) {
             auto randomTheme = get_random_item(gEnabledThemes);
             auto themePath = theme_directory_path / randomTheme;
 
-            tempMenPack.clear();
-            tempMen2Pack.clear();
-            tempCafeBarista.clear();
-
-            SearchThemeFiles(themePath, tempMenPack, tempMen2Pack, tempCafeBarista);
-
-            if (!tempMen2Pack.empty()) {
-                men2PackPath = tempMen2Pack;
+            auto res = SearchThemeFiles(themePath, SearchMen2);
+            if (res.men2Pack) {
+                men2PackPath = std::move(*res.men2Pack);
                 gLoadedMen2Theme = randomTheme;
                 break;
             }
             attempts++;
         }
 
+        // Find a cafe_barista_men.bfsar, and .bfstm files.
         attempts = 0;
         while (cafeBaristaPath.empty() && attempts < maxAttempts) {
             auto randomTheme = get_random_item(gEnabledThemes);
             auto themePath = theme_directory_path / randomTheme;
 
-            tempMenPack.clear();
-            tempMen2Pack.clear();
-            tempCafeBarista.clear();
-
-            SearchThemeFiles(themePath, tempMenPack, tempMen2Pack, tempCafeBarista);
-
-            if (!tempCafeBarista.empty()) {
-                cafeBaristaPath = tempCafeBarista;
-                gLoadedCafeBaristaTheme = randomTheme;
+            auto res = SearchThemeFiles(themePath, SearchCafeBarista);
+            if (res.cafeBarista || res.bfstmSet) {
+                if (res.bfstmSet)
+                    bfstmSet = std::move(*res.bfstmSet);
+                if (res.cafeBarista) {
+                    cafeBaristaPath = std::move(*res.cafeBarista);
+                    gLoadedCafeBaristaTheme = randomTheme;
+                }
                 break;
             }
             attempts++;
         }
+
         contentPath = theme_directory_path / (gLoadedMenTheme + "/content");
         if (!exists(contentPath))
             contentPath.clear();
@@ -490,19 +559,29 @@ void HandleThemes() {
 
         auto currentThemePath = theme_directory_path / gLoadedTheme;
 
-        std::filesystem::path menRpxPath;
-        SearchThemeFiles(currentThemePath, menPackPath, men2PackPath, cafeBaristaPath, &menRpxPath);
+        auto [newMen, newMen2, newCafeBarista, newMenRpx, newBfstmSet] =
+            SearchThemeFiles(currentThemePath, SearchAll);
+        if (newMen)
+            menPackPath = std::move(*newMen);
+        if (newMen2)
+            men2PackPath = std::move(*newMen2);
+        if (newCafeBarista)
+            cafeBaristaPath = std::move(*newCafeBarista);
+        if (newBfstmSet)
+            bfstmSet = std::move(*newBfstmSet);
 
-        if (!menRpxPath.empty()) {
-            // RPXLoadingModule takes a path relative to the SD root.
-            auto relativePath = menRpxPath.lexically_relative("fs:/vol/external01").generic_string();
+        if (newMenRpx) {
+            auto relativePath = newMenRpx->lexically_relative("fs:/vol/external01").generic_string();
             auto result = rpx_loader_ready
                 ? RPXLoader_LaunchHomebrew(relativePath.c_str())
                 : RPX_LOADER_RESULT_LIB_UNINITIALIZED;
             if (result != RPX_LOADER_RESULT_SUCCESS) {
-                DEBUG_FUNCTION_LINE_ERR("Failed to launch %s: %s", relativePath.c_str(), RPXLoader_GetStatusStr(result));
+                DEBUG_FUNCTION_LINE_ERR("Failed to launch %s: %s",
+                                        relativePath.c_str(),
+                                        RPXLoader_GetStatusStr(result));
                 if (gShowNotification)
-                    NotificationModule_AddErrorNotification("Could not launch men.rpx. Check the RPXLoadingModule and theme file.");
+                    NotificationModule_AddErrorNotification(
+                        "Could not launch men.rpx. Check the RPXLoadingModule and theme file.");
             }
             return;
         }
@@ -515,8 +594,13 @@ void HandleThemes() {
     if (!menPackPath.empty()     ||
         !men2PackPath.empty()    ||
         !cafeBaristaPath.empty() ||
+        !bfstmSet.empty()        ||
         !contentPath.empty()) {
-        success = ReplaceContent(menPackPath, men2PackPath, cafeBaristaPath, contentPath);
+        success = ReplaceContent(menPackPath,
+                                 men2PackPath,
+                                 cafeBaristaPath,
+                                 contentPath,
+                                 bfstmSet);
     }
 
     if (success && gShowNotification){
@@ -561,11 +645,10 @@ ON_APPLICATION_START() {
 
     is_wiiu_menu = (current_title_id == wiiu_menu_tid);
 
-    // The custom menu runs in Aroma's homebrew wrapper. Keep its config menu
-    // usable without launching the same RPX again from inside that wrapper.
     char executablePath[256] = {};
     if (!is_wiiu_menu && rpx_loader_ready &&
-        RPXLoader_GetPathOfRunningExecutable(executablePath, sizeof(executablePath)) == RPX_LOADER_RESULT_SUCCESS) {
+        RPXLoader_GetPathOfRunningExecutable(executablePath, sizeof(executablePath)) ==
+            RPX_LOADER_RESULT_SUCCESS) {
         std::filesystem::path path{executablePath};
         if (std::string_view{executablePath}.starts_with("wiiu/themes/") &&
             IgnoreCaseEqual(path.filename(), "men.rpx")) {
