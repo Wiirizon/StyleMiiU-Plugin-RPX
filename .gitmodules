@@ -7,3 +7,6 @@
 [submodule "external/libnotifications"]
 	path = external/libnotifications
 	url = https://github.com/wiiu-env/libnotifications.git
+[submodule "external/librpxloader"]
+	path = external/librpxloader
+	url = https://github.com/wiiu-env/librpxloader.git

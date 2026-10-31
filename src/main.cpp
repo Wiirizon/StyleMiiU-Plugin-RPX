@@ -5,6 +5,7 @@
 
 #include <notifications/notifications.h>
 #include <content_redirection/redirection.h>
+#include <rpxloader/rpxloader.h>
 
 #include <coreinit/title.h>
 #include <coreinit/launch.h>
@@ -26,9 +27,10 @@
 #include <functional>
 #include <random>
 #include <ranges>
+#include <string_view>
 #include <vector>
 
-WUPS_PLUGIN_NAME("StyleMiiU");
+WUPS_PLUGIN_NAME("StyleMiiU RPX");
 WUPS_PLUGIN_DESCRIPTION("A way to easily load custom themes");
 WUPS_PLUGIN_VERSION(VERSION);
 WUPS_PLUGIN_AUTHOR("Juanen100");
@@ -41,6 +43,7 @@ using namespace std::literals;
 
 static bool need_to_restart = false;
 static bool is_wiiu_menu = false;
+static bool rpx_loader_ready = false;
 static std::minstd_rand prng_engine;
 
 void initialize_prng()
@@ -198,7 +201,7 @@ try {
     using BoolItem = wupsext::ConfigItemBooleanVar;
 
     root.add(BoolItem::Create(KEY_THEME_MANAGER_ENABLED,
-                              "Enable StyleMiiU",
+                              "Enable StyleMiiU RPX",
                               gThemeManagerEnabled,
                               theme_manager_enabled_changed_callback));
 
@@ -334,6 +337,8 @@ void ConfigMenuClosedCallback() {
 INITIALIZE_PLUGIN() {
     initialize_prng();
 
+    rpx_loader_ready = RPXLoader_InitLibrary() == RPX_LOADER_RESULT_SUCCESS;
+
     if (auto err = ContentRedirection_InitLibrary()) {
         DEBUG_FUNCTION_LINE_ERR("Failed to init ContentRedirection. Error %s %d",
                                 ContentRedirection_GetStatusStr(err),
@@ -346,7 +351,7 @@ INITIALIZE_PLUGIN() {
         gShowNotification = false;
     }
 
-    WUPSConfigAPIOptionsV1 configOptions = {.name = "StyleMiiU"};
+    WUPSConfigAPIOptionsV1 configOptions = {.name = "StyleMiiU RPX"};
     if (auto err = WUPSConfigAPI_Init(configOptions,
                                       ConfigMenuOpenedCallback,
                                       ConfigMenuClosedCallback)) {
@@ -367,6 +372,7 @@ INITIALIZE_PLUGIN() {
 }
 
 DEINITIALIZE_PLUGIN() {
+    RPXLoader_DeInitLibrary();
     NotificationModule_DeInitLibrary();
 }
 
@@ -374,12 +380,15 @@ void
 SearchThemeFiles(const std::filesystem::path &themePath,
                  std::filesystem::path &outMenPack,
                  std::filesystem::path &outMen2Pack,
-                 std::filesystem::path &outCafeBarista)
+                 std::filesystem::path &outCafeBarista,
+                 std::filesystem::path *outMenRpx = nullptr)
 try {
     for (auto &entry : std::filesystem::recursive_directory_iterator{themePath}) {
         if (!entry.is_regular_file())
             continue;
         auto filename = entry.path().filename();
+        if (outMenRpx && outMenRpx->empty() && IgnoreCaseEqual(filename, "men.rpx"))
+            *outMenRpx = entry.path();
         if (outMenPack.empty() && IgnoreCaseEqual(filename, "Men.pack"))
             outMenPack = entry.path();
         if (outMen2Pack.empty() && IgnoreCaseEqual(filename, "Men2.pack"))
@@ -481,7 +490,22 @@ void HandleThemes() {
 
         auto currentThemePath = theme_directory_path / gLoadedTheme;
 
-        SearchThemeFiles(currentThemePath, menPackPath, men2PackPath, cafeBaristaPath);
+        std::filesystem::path menRpxPath;
+        SearchThemeFiles(currentThemePath, menPackPath, men2PackPath, cafeBaristaPath, &menRpxPath);
+
+        if (!menRpxPath.empty()) {
+            // RPXLoadingModule takes a path relative to the SD root.
+            auto relativePath = menRpxPath.lexically_relative("fs:/vol/external01").generic_string();
+            auto result = rpx_loader_ready
+                ? RPXLoader_LaunchHomebrew(relativePath.c_str())
+                : RPX_LOADER_RESULT_LIB_UNINITIALIZED;
+            if (result != RPX_LOADER_RESULT_SUCCESS) {
+                DEBUG_FUNCTION_LINE_ERR("Failed to launch %s: %s", relativePath.c_str(), RPXLoader_GetStatusStr(result));
+                if (gShowNotification)
+                    NotificationModule_AddErrorNotification("Could not launch men.rpx. Check the RPXLoadingModule and theme file.");
+            }
+            return;
+        }
 
         contentPath = currentThemePath / "content";
         if (!exists(contentPath))
@@ -536,6 +560,19 @@ ON_APPLICATION_START() {
     uint64_t wiiu_menu_tid = _SYSGetSystemApplicationTitleId(SYSTEM_APP_ID_WII_U_MENU);
 
     is_wiiu_menu = (current_title_id == wiiu_menu_tid);
+
+    // The custom menu runs in Aroma's homebrew wrapper. Keep its config menu
+    // usable without launching the same RPX again from inside that wrapper.
+    char executablePath[256] = {};
+    if (!is_wiiu_menu && rpx_loader_ready &&
+        RPXLoader_GetPathOfRunningExecutable(executablePath, sizeof(executablePath)) == RPX_LOADER_RESULT_SUCCESS) {
+        std::filesystem::path path{executablePath};
+        if (std::string_view{executablePath}.starts_with("wiiu/themes/") &&
+            IgnoreCaseEqual(path.filename(), "men.rpx")) {
+            is_wiiu_menu = true;
+            return;
+        }
+    }
 
     if (!is_wiiu_menu)
         return;
