@@ -1,0 +1,438 @@
+[33mcommit 3d4782f70bb5f6d9e56784daa51484a126fd7534[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Sun Jul 12 17:33:10 2026 +0200
+
+    Bump version number
+
+[33mcommit 253c71534793e5441b8fc45ff716d6b001b603f4[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Sun Jul 12 12:00:24 2026 +0200
+
+    Fix content folder overwritting men files when mashing up themes
+
+[33mcommit 1aff13a435d9cae5a12f10f9b3b3497b4bfa2b82[m
+Merge: 8299de6 3878668
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Jul 12 11:08:49 2026 +0200
+
+    Merge pull request #20 from dkosmari/big-refactor
+    
+    Big refactor
+
+[33mcommit 3878668231e09bb22767a4af9a8b243fb964a4fa[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Jul 11 22:13:01 2026 -0300
+
+    Always call HandleThemes() to ensure the global strings are cleared.
+
+[33mcommit 93c1d180ec7b86c896ae37e13869a186a72fdaac[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Jul 11 21:35:24 2026 -0300
+
+    Ignore temp files.
+
+[33mcommit 2ff7434911b136af5d3651fb1558184dec28e001[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Jul 11 21:27:58 2026 -0300
+
+    Removed some unused headers.
+
+[33mcommit 971cd2f28554b5676ec8f92792f3d530e1050771[m
+Merge: ede715b 8299de6
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Jul 11 21:23:45 2026 -0300
+
+    Resolved conflict with main.
+
+[33mcommit ede715beecf0ae2abd62cf982e5bb0b89ea3cfc3[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Jul 11 21:10:10 2026 -0300
+
+    More cleanup, prefer using std::filesystem when appropriate.
+
+[33mcommit 1bd30b7cef998192689c371930eafc728f7fda66[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Jul 11 13:12:07 2026 -0300
+
+    - Big code cleanup, removed duplicated variables that were causing inconsistent behavior.
+    - Some refactoring on the plugin config menu, simplified labels.
+
+[33mcommit 8299de6d011f25dd10678549aa76e732c63e1c0a[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Thu Jul 9 11:47:25 2026 +0200
+
+    Fix small bug with Themiify and shuffling
+
+[33mcommit 116244ce22e46ff9aea36620f01b1b14bcbe8805[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Wed Jul 8 12:37:10 2026 +0200
+
+    Avoid loading an empty string as a valid theme
+
+[33mcommit 423324360556c1544189af8b2bced04c1adfefd7[m
+Merge: f071752 6b366e7
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Tue Jul 7 22:53:30 2026 +0200
+
+    Merge pull request #19 from dkosmari/no-streams
+
+[33mcommit 6b366e7d28de38702f9d4888b10c330ddc137b6d[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Tue Jul 7 17:43:26 2026 -0300
+
+    Removed usage of std streams, cleaned up ReloadConfig()
+
+[33mcommit f071752113525cad0915bbf3bc0f8b25db6a8ea1[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Tue Jul 7 12:08:58 2026 +0200
+
+    Fix small bug with the config reload
+
+[33mcommit 09ce4365873b0a7c5ee8d2a36a08dce6f89cd155[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Tue Jul 7 12:01:17 2026 +0200
+
+    Replace std::getline with StringTools::stringSplit
+
+[33mcommit c72be5c068dfc3cff791530e92df654f11265e09[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Tue Jul 7 11:28:26 2026 +0200
+
+    List themes in alphabetical order
+
+[33mcommit 3e3f7599f55fcb939579fa17e9102fe4b54f9a91[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Tue Jul 7 10:47:52 2026 +0200
+
+    Reload config ON_APPLICATION_START hook
+
+[33mcommit cd89b54973502bd648bcca259d0128627e5762eb[m
+Author: Juanen <juanenrica668@proton.me>
+Date:   Sun Apr 19 17:29:09 2026 +0200
+
+    Bump version number
+
+[33mcommit ec5c2e51e81fd8df944ce55f78f5a3db071351fe[m
+Merge: be13dc1 8e84234
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Apr 18 13:14:09 2026 +0200
+
+    Merge pull request #16 from dkosmari/aroma-abifix
+    
+    Updated WUPS for Aroma b26
+
+[33mcommit 8e84234d13e62fa595ded87edc679b25e206484d[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sat Apr 18 08:05:15 2026 -0300
+
+    Updated WUPS for upcoming Aroma b26 compatibility.
+
+[33mcommit ba922377e7701a3ea0b1596aeac81e99848c05b3[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Thu Apr 16 22:16:44 2026 -0300
+
+    Updated wups.
+
+[33mcommit e23885b6bb60d600d5efc67b391406bbdeae8a71[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Sun Apr 12 18:11:02 2026 -0300
+
+    Switch to abifix branches for next Aroma.
+
+[33mcommit be13dc1e512aaf9ceb8fc463d7eeb7a81f9e62c1[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Mon Mar 2 18:48:36 2026 +0100
+
+    Bump version number
+
+[33mcommit 24a117534e8ce1a4b3bcb73073d3482bceae9730[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Mon Mar 2 12:58:37 2026 +0100
+
+    Show notification for mashup themes too
+
+[33mcommit cea7741f8a167f7e6dae5ccdca6e4f8d4a9a03ff[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Feb 28 21:09:21 2026 +0100
+
+    Improved mashup option and spelling
+
+[33mcommit 39440cdf9572d2f20109d8241e1c87789191deaf[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Feb 28 15:52:54 2026 +0100
+
+    Update submodules
+
+[33mcommit f5a9c60eed22f52dc5185682d7c009a83a2e6619[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Feb 28 15:50:23 2026 +0100
+
+    Added a notification to display the current theme
+
+[33mcommit 35ba3887e7b0a13872e0a34dd163dc4d97caddd3[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Feb 28 14:42:38 2026 +0100
+
+    Mashup themes option
+
+[33mcommit a3e544d9b880d2af04c47dcbec35dc80cf39b173[m
+Merge: 0c52b13 fc6d3fd
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Wed Jan 7 00:17:12 2026 +0100
+
+    Merge pull request #13 from dkosmari/random-fix
+
+[33mcommit fc6d3fd4627154783f82c512ffd9d31d3d82f1db[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Tue Jan 6 19:44:25 2026 -0300
+
+    Fixed RNG.
+
+[33mcommit 0c52b13b2f9458a36c8d022a2566b98e509c08d6[m
+Merge: aea3c08 dd2fce5
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Tue Jan 6 23:32:33 2026 +0100
+
+    Merge pull request #12 from dkosmari/submodules
+
+[33mcommit dd2fce520f2f12e3b5f13c7cfde9d98f77807937[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Tue Jan 6 19:24:48 2026 -0300
+
+    Added script to run a full docker build.
+
+[33mcommit a3bbe7eb94837f5dfa42b7232044fa54283a5e46[m
+Author: Daniel K. O. (dkosmari) <none@none>
+Date:   Tue Jan 6 19:06:57 2026 -0300
+
+    Use wups and libcontentredirection as submodules.
+
+[33mcommit aea3c08e1e294f4cff726c32a5c513a49ce9f546[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Tue Jan 6 19:41:49 2026 +0100
+
+    Bump version number & change rng seed
+
+[33mcommit b1855f8b834bcc1b8eeb77e0fee31b2270772902[m
+Author: Fangal-Airbag <fangalairbag@gmail.com>
+Date:   Sun Sep 14 20:05:17 2025 -0400
+
+    Reload Storage at Application Start
+    
+    Now when the plugin's config file is changed externally by Themiify, at the next launch of the Wii U Menu, the new theme set will actually appear.
+
+[33mcommit 3bd9846f0c696e3f1aa48302660ffeeda7de8ff7[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Mon Sep 8 10:53:18 2025 +0200
+
+    Relaunch the Wii U Menu instead of soft rebooting
+
+[33mcommit 5e743abbdaeb8adf50be7f17dc6551279eee0a74[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Aug 31 11:06:28 2025 +0200
+
+    Remove loading from SDCafiine's folder and bug fix
+
+[33mcommit 5b049091de604b5669fd0ed3ce95ccd1faf80ae7[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Thu Mar 27 17:51:40 2025 +0100
+
+    Update README.md
+
+[33mcommit c95bb40ace2bd4a31dd91a718663b42f4014b8b0[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Feb 16 19:51:51 2025 +0100
+
+    Add small troubleshooting section on README
+
+[33mcommit 808096a0425dbf752f512ec98ab9d71fe15cb636[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Wed Feb 12 19:32:42 2025 +0100
+
+    Return to ContentRedirectionModule
+    
+    0.2.8 of ContentRedirectionModule gets a better implementation of the one file replacement function
+
+[33mcommit cbef42300f05c67f1ac5e51daf37b8662f83d838[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Feb 2 11:24:35 2025 +0100
+
+    stupid mistake
+
+[33mcommit a53a906db979a279e193d4cca15b52dc0d104fe7[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Feb 1 18:25:28 2025 +0100
+
+    Bootloop fixed
+
+[33mcommit 4e5bb7db935867da6e7199a7fe1e3aa7548caa03[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Feb 1 17:33:54 2025 +0100
+
+    Selecting themes the first time no longer crash
+
+[33mcommit beb728f3809452830abdd0fb01a66af355dc7a0b[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Fri Jan 31 17:25:32 2025 +0100
+
+    Fixes a major crash when selecting other themes
+
+[33mcommit 09b2387dd13b2e1e5ecf82d8df1c8f42cd3108a4[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Jan 26 20:22:02 2025 +0100
+
+    I'm very silly
+
+[33mcommit 3429e0ceb1f509ca663db3003f80a4694723312d[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Jan 26 13:19:41 2025 +0100
+
+    oops
+
+[33mcommit be2bc5113337102bb3309ec1c2d5ac0c5061c134[m
+Merge: 785c67f b07046c
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Jan 26 13:16:27 2025 +0100
+
+    Merge branch 'main' of https://github.com/Juanen100/StyleMiiU-Plugin
+
+[33mcommit 785c67fef78f4aeceea45c9b41de38d034d32f2d[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Jan 26 13:16:19 2025 +0100
+
+    Small cleanup
+
+[33mcommit b07046c5dff87cacce2649353016f45df1a238c6[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Jan 26 13:15:55 2025 +0100
+
+    Update README.md
+
+[33mcommit fd81f0826283f711cb32d8ef6a4d396525357c23[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Jan 25 18:04:51 2025 +0100
+
+    No need for SDCafiine's structure anymore
+
+[33mcommit 78c99e876df7f525bb4fbbac11948317dfcf7ff5[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Jan 25 13:08:59 2025 +0100
+
+    Small clean up and Readme fix
+
+[33mcommit 52cf3eb0f0cbfb9d92d280734420dcf5b7283829[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Nov 23 20:15:18 2024 +0100
+
+    I believe no more polishing
+    
+    I hate that you can see the text before it changes to the text I want it to be but since I have no solution and it bothers quite literally no one except me, I'm not gonna bother at the moment.
+    
+    Also, since I rely on the ContentRedirectionModule SDCafiine also relies on, I can't do a feature I wanted to do that is just not use subfolders at all for files. Might fork ConentRedirectionModule for the plugin or just leave it and hope no one cares :)
+
+[33mcommit 7e6177e22d8505b6a5292374df4e3be3070de1f0[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Nov 17 18:41:19 2024 +0100
+
+    Some polishing to do
+
+[33mcommit 0d18e492eefa1dfb98bc5f175ad697c0fe21930b[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Oct 5 19:11:58 2024 +0200
+
+    Some more bugfixes + name change
+
+[33mcommit 6d9c1b6db9b34165bda50864344e081c3976127c[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Oct 5 18:07:20 2024 +0200
+
+    string_view should be better
+
+[33mcommit 05b7ae2f3048fc5036f582855684279259004af5[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Oct 5 18:04:36 2024 +0200
+
+    Implemented final interface fix
+
+[33mcommit e6e0fe3eea2fc842a4e8f3f6af1b9ba7edd70b87[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Oct 5 12:28:02 2024 +0200
+
+    Delete duplicates when shuffling themes
+    
+    Apparently it added the same theme name as the current enabled one rigging the shuffle option by accident
+
+[33mcommit e9940b424d8a7446b1f76a16ab9f486c0080bdbf[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 29 19:48:55 2024 +0200
+
+    Actually finished storage rewrite
+
+[33mcommit 6919a31922ee81ce1621f74b36ae8d1c17a58d9e[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 29 18:05:23 2024 +0200
+
+    Storage system rewrite
+    
+    Doesn't work yet.
+    The previous way of saving the options was a mess, because it saved every single theme to the file as an individual option.
+
+[33mcommit 186245e7e3dbd9b74b5fd24abd8931900e229f22[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 29 15:53:37 2024 +0200
+
+    SDCafiine's themes folder just in case
+
+[33mcommit f1e696706dc0bde0c5febdb57179ba397a008f48[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 29 15:37:11 2024 +0200
+
+    Couldn't get no subfolders to work
+
+[33mcommit a69ea770dfaac2151267ab70ecbc49a984643c05[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Sep 28 16:57:31 2024 +0200
+
+    Changed interface a bit + sdcafiine fallback
+
+[33mcommit 2454dc77cd4a3482ece3db25c18b485763308ff2[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 22 20:23:59 2024 +0200
+
+    Update globals.h
+
+[33mcommit 710ab816e0472b8ed920d8397d76d1357d3d69f0[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 22 20:19:10 2024 +0200
+
+    Finished shuffle option
+
+[33mcommit e3aeecc78d7de247cd37aaa0df8d8bd37c246f15[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sun Sep 22 18:53:53 2024 +0200
+
+    Shuffle option added
+
+[33mcommit e49ea439c4e953abce9c471628bd7fe65b97383c[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Sep 21 21:15:57 2024 +0200
+
+    Remove unnecesary code
+
+[33mcommit 9ed2c36ce2c55b0e72e2440b674a28e88c0ffc5c[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Sep 21 21:10:41 2024 +0200
+
+    Commits plugin
+
+[33mcommit cac9916ef224337e3a034815e64b884f6a8fd120[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Sep 21 21:07:02 2024 +0200
+
+    Update README.md
+
+[33mcommit 530b9b6cc9daca873c3a7ac88adaeae2bf85adf3[m
+Author: Juanen100 <65170591+Juanen100@users.noreply.github.com>
+Date:   Sat Sep 21 20:28:41 2024 +0200
+
+    Initial commit
