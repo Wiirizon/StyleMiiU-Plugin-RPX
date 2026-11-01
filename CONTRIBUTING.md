@@ -47,8 +47,9 @@ git status --short
 ```
 
 Hardware testing requires a Wii U running Aroma and the matching
-RPXLoadingModule. Do not claim console validation when only a local build has
-been performed.
+RPXLoadingModule. Record the exact tested path and distinguish user-reported
+results from complete compatibility coverage. Do not claim console validation
+when only a local build has been performed.
 
 ## Code and Documentation
 

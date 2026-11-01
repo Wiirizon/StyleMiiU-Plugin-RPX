@@ -93,9 +93,22 @@ The output is `stylemiiu.wps`. On Windows, use the devkitPro MSYS2 shell.
 For a clean release build, run `make clean` before `make -j4`. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the complete development workflow.
 
+## Validation status
+
+The project has been reported working on real Wii U hardware with WiiUNX2,
+multiple regular themes, notifications, shuffle, mashups, and recovery to the
+stock Wii U Menu after disabling the plugin. These results are useful
+compatibility evidence, but they do not guarantee that every theme, region,
+system configuration, or future Aroma version will behave identically.
+
+The `men.rpx` and `.bfstm` paths remain experimental and should be tested with
+trusted files before wider distribution.
+
 ## Release files and licensing
 
-The RPX fork is experimental and has not been tested on a console. Release packages contain the plugin, installation instructions, and license notices. Themes and menu executables are supplied separately; no Nintendo firmware, keys, artwork, music, or themes are included.
+Release packages contain the plugin, installation instructions, and license
+notices. Themes and menu executables are supplied separately; no Nintendo
+firmware, keys, artwork, music, or themes are included.
 
 The plugin is GPLv3, and its dependencies keep their own licenses. See [THIRD-PARTY.md](THIRD-PARTY.md) for credits and source locations. Each binary release comes with a separate source archive that includes the pinned submodule sources and their licenses. Use that archive to rebuild; GitHub's automatic source archives do not include submodule contents. Keep the license notices and provide the matching source when redistributing the plugin.
 

@@ -73,6 +73,9 @@ commit messages, and documentation, MUST be written in English.
 
 - The plugin requires Aroma and the RPXLoadingModule for `men.rpx` launching.
 - RPX files execute as homebrew code; use only files from trusted sources.
-- Console behavior remains experimental and must not be described as validated
-  without actual hardware testing.
+- Console behavior has user-reported validation with WiiUNX2, regular themes,
+  notifications, shuffle, mashups, and stock-menu recovery. Preserve the
+  distinction between these reported results and complete compatibility
+  coverage.
+- `men.rpx` and `.bfstm` behavior remains experimental even after those tests.
 - Release packages must include the plugin and applicable license notices only.
