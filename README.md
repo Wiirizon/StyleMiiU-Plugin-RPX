@@ -20,7 +20,7 @@ Copy the file `stylemiiu.wps` into `SD:/wiiu/environments/[ENVIRONMENT]/plugins`
 
 ## Usage
 
-This plugin can detect Men.pack, Men2.pack and cafe_barista_men.bfsar automatically to make the theme have any folder structure you desire. SDCaffine's file structure is still compatible with this plugin. *Additional files like AllMessage.szs do still need to be on their corresponding folder structure, like this: `SD:/wiiu/themes/[ThemeName]/content/[TheLanguageToPatch]/Message/AllMessage.szs`*
+This plugin can detect Men.pack, Men2.pack and cafe_barista_men.bfsar automatically to make the theme have any folder structure you desire. SDCafiine's file structure is still compatible with this plugin. *Additional files like AllMessage.szs do still need to be on their corresponding folder structure, like this: `SD:/wiiu/themes/[ThemeName]/content/[TheLanguageToPatch]/Message/AllMessage.szs`*
 
 Themes will only load from the `SD:/wiiu/themes` directory, it is recommended that you move all your themes from SDCafiine into the themes directory to avoid problems of both plugins trying to patch the Wii U Menu.
 
@@ -53,18 +53,32 @@ Install this fork in place of the original StyleMiiU plugin. It still builds as 
 
 ## Troubleshooting
 
-The plugin will sometimes not work properly when certain race conditions are triggered. The most commons ones being described further in this file.
+The plugin can be affected by race conditions during Home Menu restarts. The most common cases are described below.
 
 ### Bootlooping on Wii U Menu splash
 
 The first reason might be you have both SDCafiine and StyleMiiU trying to patch a theme to the Wii U menu, which can cause issues. Moving themes from SDCafiine's directory to the theme's directory or disabling SDCafiine will usually solve this issue.
 
-This problem might also show up due to the fact that you're using a theme that hasn't been tested or properly made to support an European/PAL console. European/PAL consoles have more language packs built onto the menu menaning the file size on themes needs to be smaller to work properly. This is more likely to happen with animated themes or unoptimized themes.
+This problem might also show up because the theme has not been tested or properly made to support a European/PAL console. European/PAL consoles have more language packs built into the menu, meaning theme files need to be smaller to work properly. This is more likely to happen with animated themes or unoptimized themes.
 
 ### My theme isn't loading
 
-The most common issue would be having bad or corrupted Men.pack, Men2.pack or cafe_barista_men.bfsar files which makes the plugin unable to patch them on the Wii U Menu. This is highly unlikely to happen and the reason might also be the same as the bootlooping problem on EU consoles.
+The most common issue is a bad or corrupted Men.pack, Men2.pack, or cafe_barista_men.bfsar file, which prevents the plugin from patching the Wii U Menu. The cause may also be the same as the bootlooping problem on European consoles.
 
+
+## Architecture
+
+- `src/main.cpp` initializes WUPS, loads configuration, discovers theme files,
+  and coordinates asset replacement or RPX launching.
+- `src/themeSelector.cpp` registers content-redirection layers for Men.pack,
+  Men2.pack, cafe_barista_men.bfsar, stream files, and theme content.
+- `src/wupsext/` contains the custom WUPS configuration item helpers.
+- `external/` contains pinned WUPS, content-redirection, notifications, and
+  RPX-loader dependencies.
+
+When a selected theme contains `men.rpx`, the plugin launches it through
+RPXLoadingModule instead of applying asset redirection. Mashup mode remains
+asset-only by design.
 
 ## Building
 
@@ -76,9 +90,16 @@ make -j4
 ```
 
 The output is `stylemiiu.wps`. On Windows, use the devkitPro MSYS2 shell.
+For a clean release build, run `make clean` before `make -j4`. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the complete development workflow.
 
 ## Release files and licensing
 
 The RPX fork is experimental and has not been tested on a console. Release packages contain the plugin, installation instructions, and license notices. Themes and menu executables are supplied separately; no Nintendo firmware, keys, artwork, music, or themes are included.
 
 The plugin is GPLv3, and its dependencies keep their own licenses. See [THIRD-PARTY.md](THIRD-PARTY.md) for credits and source locations. Each binary release comes with a separate source archive that includes the pinned submodule sources and their licenses. Use that archive to rebuild; GitHub's automatic source archives do not include submodule contents. Keep the license notices and provide the matching source when redistributing the plugin.
+
+## Maintainer and AI workflow
+
+Repository maintenance rules, AI-agent requirements, release safeguards, and
+the project context summary are documented in [AGENTS.md](AGENTS.md).
