@@ -4,6 +4,8 @@ StyleMiiU RPX is a small fork of [StyleMiiU](https://github.com/ThemeCafe/StyleM
 
 It keeps the original theme options and adds a way to launch a custom menu from your SD card.
 
+The plugin metadata credits Juanen100 and Wiirizon as developers.
+
 Modified on October 28, 2026 to add RPX theme launching and update the plugin title. The plugin remains licensed under GPLv3; see [LICENSE](LICENSE). This is an unofficial project and is not affiliated with or endorsed by Nintendo.
 
 **No system file is modified by this plugin.**
