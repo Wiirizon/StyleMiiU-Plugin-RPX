@@ -29,10 +29,6 @@ email, it must check the repository's commit history to find previous examples
 of its own attribution, or search the web to find its correct official
 co-author tag.
 
-For Copilot, use:
-
-`Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>`
-
 ### Documentation Sync Rule
 
 Any time an AI agent changes, adds, or removes code, it MUST simultaneously
