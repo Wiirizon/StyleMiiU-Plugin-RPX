@@ -569,7 +569,6 @@ void HandleThemes() {
             cafeBaristaPath = std::move(*newCafeBarista);
         if (newBfstmSet)
             bfstmSet = std::move(*newBfstmSet);
-
         if (newMenRpx) {
             auto relativePath = newMenRpx->lexically_relative("fs:/vol/external01").generic_string();
             auto result = rpx_loader_ready
