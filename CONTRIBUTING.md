@@ -64,11 +64,8 @@ when only a local build has been performed.
 ## Commits and Releases
 
 Use concise English commit messages. AI-assisted commits must include the
-standard co-author trailer:
-
-```text
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
-```
+standard `Co-authored-by` trailer for the assisting agent, using that agent's
+official contributor name and routing email.
 
 Version changes belong in `src/globals.h`. Release assets must be rebuilt from
 the tagged source, checked for the expected filename, and accompanied by the
