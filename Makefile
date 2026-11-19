@@ -13,6 +13,7 @@ LIBNOTIFICATIONS_DIR := $(TOPDIR)/external/libnotifications
 LIBRPXLOADER_DIR := $(TOPDIR)/external/librpxloader
 WUPS_DIR := $(TOPDIR)/external/WiiUPluginSystem
 WUPS_ROOT := $(WUPS_DIR)
+CAFE_GLYPHS_DIR := $(TOPDIR)/external/cafe_glyphs
 
 include $(WUPS_DIR)/share/wups_rules
 
@@ -39,15 +40,29 @@ INCLUDES	:=	src
 
 CXX += -std=c++23
 
-CFLAGS	:=	-g -Wall -Os -ffunction-sections -fdata-sections \
-			$(MACHDEP)
+CPPFLAGS = 	$(INCLUDE) \
+		-D__WIIU__ \
+		-D__WUT__ \
+		-D__WUPS__
 
-CFLAGS	+=	$(INCLUDE) -D__WIIU__ -D__WUT__ -D__WUPS__
+ifneq ($(DEBUG),)
+CPPFLAGS += -DDEBUG=1
+ifeq ($(DEBUG),VERBOSE)
+CPPFLAGS += -DVERBOSE_DEBUG=1
+endif
+endif
+
+CFLAGS	:=	-g \
+		-Wall -Wextra \
+		-Os \
+		-ffunction-sections \
+		-fdata-sections \
+		$(MACHDEP)
 
 CXXFLAGS	:= $(CFLAGS)
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-g $(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map) $(WUPSSPECS) 
+LDFLAGS	=	-g $(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map) $(WUPSSPECS)
 
 LIBS	:= -lwups -lwut -lcontentredirection -lnotifications -lrpxloader
 
@@ -61,6 +76,7 @@ LIBDIRS	:= \
 	$(LIBCONTENTREDIRECTION_DIR) \
 	$(LIBNOTIFICATIONS_DIR) \
 	$(LIBRPXLOADER_DIR) \
+	$(CAFE_GLYPHS_DIR) \
 	$(WUT_ROOT)
 
 #-------------------------------------------------------------------------------
